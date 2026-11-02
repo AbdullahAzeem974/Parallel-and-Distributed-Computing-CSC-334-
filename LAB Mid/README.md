@@ -205,28 +205,25 @@ Speedup = Local Time / Remote Time
 
 ## Demo and Screenshots
 
-Place screenshots and GIF/video walkthroughs in a folder such as:
+### Server
 
-```text
-docs/demo/
-```
+<img width="692" height="497" alt="Screenshot 2026-11-02 at 5 56 56 AM" src="https://github.com/user-attachments/assets/632c4985-bea0-4a44-b6ec-42fa9ee1e6e1" />
 
-Recommended demonstration assets:
+### Client
 
-- connection handshake screenshot
-- GUI job submission screenshot
-- remote daemon progress log screenshot
-- final rendered output screenshot
-- speed comparison chart or gif
+<img width="1092" height="824" alt="Screenshot 2026-11-02 at 5 57 17 AM" src="https://github.com/user-attachments/assets/bdde44a7-486f-4715-b345-3491b96ebd62" />
 
-## Report Notes
+### Successful Render
 
-For the coursework submission, include a short technical report in the repository describing:
+<img width="1092" height="824" alt="Screenshot 2026-11-02 at 5 57 37 AM" src="https://github.com/user-attachments/assets/6e61870e-fd88-4b73-a781-168df1e3b386" />
 
-- test setup and network topology
-- job sizes and resolutions used
-- runtime comparison table
-- observed bottlenecks and conclusions
+### Output
+
+<img width="2862" height="1782" alt="image" src="https://github.com/user-attachments/assets/b38b955a-2399-4419-8736-a77efed10736" />
+
+### Benchmarks
+
+<img width="692" height="497" alt="Screenshot 2026-11-02 at 5 58 43 AM" src="https://github.com/user-attachments/assets/f22e3ff5-59b0-4280-bee2-f4edf616ba59" />
 
 ## License
 
