@@ -54,7 +54,7 @@ class DistributedRenderClient:
 
             self.host_label = ctk.CTkLabel(self.connection_frame, text="Server IP")
             self.host_label.grid(row=0, column=0, padx=(12, 8), pady=10, sticky="w")
-            self.host_var = ctk.StringVar(value="192.168.1.1")
+            self.host_var = ctk.StringVar(value="127.0.0.1")
             self.host_entry = ctk.CTkEntry(self.connection_frame, textvariable=self.host_var)
             self.host_entry.grid(row=0, column=1, sticky="ew", padx=(0, 12))
 
@@ -145,7 +145,7 @@ class DistributedRenderClient:
             host_row = tk.Frame(connection)
             host_row.pack(fill="x", padx=10, pady=6)
             tk.Label(host_row, text="Server IP").pack(side="left")
-            self.host_var = tk.StringVar(value="192.168.1.1")
+            self.host_var = tk.StringVar(value="127.0.0.1")
             tk.Entry(host_row, textvariable=self.host_var).pack(side="left", fill="x", expand=True)
             tk.Label(host_row, text="Port").pack(side="left", padx=(12, 4))
             self.port_var = tk.StringVar(value="5005")
