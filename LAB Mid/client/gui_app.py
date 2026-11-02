@@ -1,6 +1,8 @@
 import base64
+import hashlib
 import os
 import socket
+import tempfile
 import threading
 import time
 from tkinter import filedialog, ttk
@@ -20,6 +22,7 @@ class DistributedRenderClient:
         self.sock = None
         self.connected = False
         self.download_path = None
+        self.download_temp_path = None
         self.output_file = None
         self.job_thread = None
         self._build_ui()
@@ -256,6 +259,7 @@ class DistributedRenderClient:
             "codec": "h264_nvenc",
         }
         self.download_path = output_path
+        self.download_temp_path = None
         self.progress_var.set(0)
         self.log("Submitting render job to remote worker...")
         send_json(self.sock, job)
@@ -301,14 +305,44 @@ class DistributedRenderClient:
                 break
             elif message_type == "file_chunk":
                 if self.output_file is None and self.download_path:
-                    self.output_file = open(self.download_path, "wb")
+                    output_dir = os.path.dirname(os.path.abspath(self.download_path))
+                    output_name = os.path.basename(self.download_path)
+                    file_descriptor, self.download_temp_path = tempfile.mkstemp(
+                        prefix=f".{output_name}.",
+                        suffix=".part",
+                        dir=output_dir,
+                    )
+                    self.output_file = os.fdopen(file_descriptor, "wb")
                 if self.output_file is not None and message.get("data"):
                     self.output_file.write(base64.b64decode(message["data"]))
                 if message.get("final"):
                     if self.output_file is not None:
                         self.output_file.close()
                         self.output_file = None
-                    self.log("Remote output file downloaded successfully.")
+                    expected_checksum = message.get("checksum")
+                    actual_checksum = (
+                        self._sha256_file(self.download_temp_path)
+                        if self.download_temp_path
+                        else None
+                    )
+                    if expected_checksum and actual_checksum != expected_checksum:
+                        if self.download_temp_path:
+                            os.unlink(self.download_temp_path)
+                        self.download_temp_path = None
+                        self.root.after(0, self.log, "Downloaded output failed checksum verification.")
+                        continue
+                    if self.download_temp_path and self.download_path:
+                        os.replace(self.download_temp_path, self.download_path)
+                    self.download_temp_path = None
+                    self.root.after(0, self.log, "Remote output file downloaded successfully.")
+
+    @staticmethod
+    def _sha256_file(file_path):
+        digest = hashlib.sha256()
+        with open(file_path, "rb") as file_obj:
+            for chunk in iter(lambda: file_obj.read(65536), b""):
+                digest.update(chunk)
+        return digest.hexdigest()
 
     def _update_progress(self, percent, message):
         self.progress_var.set(min(100, max(0, int(percent))))

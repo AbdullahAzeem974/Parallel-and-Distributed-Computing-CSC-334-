@@ -56,7 +56,10 @@ class RenderWorker:
         height = int(config.get("height") or 1080)
         bitrate = str(config.get("bitrate") or "8M")
         preset = str(config.get("preset") or "fast")
-        codec = str(config.get("codec") or "h264_nvenc")
+        requested_codec = str(config.get("codec") or "h264_nvenc")
+        codec = requested_codec
+        if requested_codec in {"h264_nvenc", "hevc_nvenc"} and self._find_gpu_mode() != "nvenc":
+            codec = "libx264" if requested_codec == "h264_nvenc" else "libx265"
 
         if self.ffmpeg_path is None:
             raise FileNotFoundError("FFmpeg is not installed or not available in PATH.")
@@ -77,24 +80,6 @@ class RenderWorker:
             "-an",
             output_path,
         ]
-
-        if codec == "h264_nvenc":
-            command = [
-                self.ffmpeg_path,
-                "-y",
-                "-i",
-                input_path,
-                "-vf",
-                f"scale={width}:{height}:force_original_aspect_ratio=decrease,pad={width}:{height}:(ow-iw)/2:(oh-ih)/2",
-                "-c:v",
-                "h264_nvenc",
-                "-preset",
-                preset,
-                "-b:v",
-                bitrate,
-                "-an",
-                output_path,
-            ]
 
         return command
 

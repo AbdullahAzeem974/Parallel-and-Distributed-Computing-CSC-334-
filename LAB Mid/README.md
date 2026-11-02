@@ -64,7 +64,16 @@ This project implements a client-server distributed render system for the CSC-33
    pip install -r requirements.txt
    ```
 
-3. Install FFmpeg:
+3. On macOS with Homebrew Python 3.14, install Tkinter:
+
+   ```bash
+   brew install python-tk@3.14
+   ```
+
+   Tkinter is provided separately from Homebrew Python. Install the matching
+   `python-tk` package before launching the client GUI.
+
+4. Install FFmpeg:
 
    - Ubuntu/Debian: `sudo apt install ffmpeg`
    - Fedora: `sudo dnf install ffmpeg`
